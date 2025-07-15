@@ -6,8 +6,11 @@ function Article(props) {
         <article>
             <a href={ "https://reddit.com" + props.article.permalink } target="_blank">
                 <h3>{props.article.title}</h3>
+            
+            <div className="article-img">
+                <Thumbnail article={props.article} />
+            </div>
             </a>
-            <Thumbnail article={props.article} />
             <p>Author: {props.article.author}</p>
             <p>Score: {props.article.score}</p>
             <p>Comments: {props.article.num_comments}</p>
