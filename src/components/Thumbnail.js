@@ -1,24 +1,16 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
-function Thumbnail(props) {
-    let imageUrl = '';
+function Thumbnail() {
 
-    if (
-        props.article.preview &&
-        props.article.preview.images &&
-        props.article.preview.images[0] &&
-        props.article.preview.images[0].source &&
-        props.article.preview.images[0].source.url
-    ) {
-        imageUrl = props.article.preview.images[0].source.url.replace(/&amp;/g, '&');
-    } else {
-        imageUrl = props.article.thumbnail;
-    }
+    const articles = useSelector(state => state.reddit.articles);
+    
 
     return (
-        <div className="thumbnail">
-            <img src={imageUrl} alt="" />
-        </div>
+        <>
+        {console.log(articles)}
+        <img src={articles.thumbnail}/>
+        </>
     );
 }
 

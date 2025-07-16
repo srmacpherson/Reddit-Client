@@ -1,41 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import Article from './components/Article';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchArticles, setSubreddit } from './features/redditSlice';
+
 
 function App() {
-  const [articles, setArticles] = useState([]);
-  const [subreddit, setSubreddit] = useState('webdev');
+    const dispatch = useDispatch();
+    const { articles, subreddit, isLoading, error } = useSelector((state) => state.reddit);
 
+    const [input, setInput] = useState(subreddit);
+
+      // Debounced fetch effect
   useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const response = await fetch(`https://www.reddit.com/r/${subreddit}.json`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        console.log(data);
-        setArticles(data.data.children);
-      } catch (error) {
-        console.error('Error fetching articles:', error);
+    const timeoutId = setTimeout(() => {
+      if (input.trim() !== subreddit.trim()) {
+        dispatch(setSubreddit(input));
       }
-    };
+    }, 500); // wait 500ms after last keystroke
 
-    fetchArticles();
-  }, [subreddit]);
+    return () => clearTimeout(timeoutId); // cleanup on re-type
+  }, [input, subreddit, dispatch]);
+
+    useEffect(() => {
+      dispatch(fetchArticles(subreddit));
+    }, [dispatch, subreddit]);
+
+    const handleChange = (e) => {
+      setInput(e.target.value);
+    }
+  
 
   return (
     <div className="App">
       <header className="App-header">
         <h1>REDDIT SUB SEARCH</h1>
-        <input type="text" className="input" value={subreddit} onChange={e => setSubreddit(e.target.value)} />
+        <input 
+        type="text" 
+        className="input" 
+        value={input} 
+        onChange={handleChange} 
+        />
       </header>
+      
+      {isLoading && <p>Loading...</p>}
+      {error && <p>Error: {error}</p>}
       <div className="articles">
-        {articles.map((article, index) => (
-          <Article key={index} article={article.data} />
-        ))}
-      </div>
+  {(Array.isArray(articles) ? articles.slice(0, 1) : []).map((article, index) => (
+    <Article key={index} article={article.data} />
+  ))}
+</div>
     </div>
   );
 }
+
 
 export default App;
