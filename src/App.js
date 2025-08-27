@@ -5,23 +5,28 @@ function App() {
   const [articles, setArticles] = useState([]);
   const [subreddit, setSubreddit] = useState('webdev');
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const response = await fetch(`https://www.reddit.com/r/${subreddit}.json`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        console.log(data);
-        setArticles(data.data.children);
-      } catch (error) {
-        console.error('Error fetching articles:', error);
-      }
-    };
+ useEffect(() => {
+  const fetchArticles = async () => {
+    try {
+      const response = await fetch(
+        `https://corsproxy.io/?${encodeURIComponent(`https://www.reddit.com/r/${subreddit}.json`)}`
+      );
 
-    fetchArticles();
-  }, [subreddit]);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      console.log(data);
+      setArticles(data.data.children);
+    } catch (error) {
+      console.error("Error fetching articles:", error);
+    }
+  };
+
+  fetchArticles();
+}, [subreddit]);
+
 
   return (
     <div className="App">
