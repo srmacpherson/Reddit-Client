@@ -12,10 +12,10 @@ function Article(props) {
                     <Thumbnail article={props.article} />
                 </div>
             </a>
-            <p class='preview'>
+            <p className='preview'>
                 {props.article.selftext ? props.article.selftext.split(' ').slice(0, 10).join(' ') + '...' : ''}
             </p>
-            <div class='extras'>
+            <div className='extras'>
                 <p>
                     Author: <a href={`https://www.reddit.com/user/${props.article.author}`}>{props.article.author}</a>
                 </p>
